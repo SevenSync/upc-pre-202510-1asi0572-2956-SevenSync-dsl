@@ -2,13 +2,19 @@ workspace "Macetech - Smart Gardening Platform" "DDD Strategic Bounded Contexts 
 
     model {
 
+// PLEASE REMEMBER, AN OUTBOUND SERVICE IS A SERVICE THAT A BOUNDED CONTEXT USES TO COMMUNICATE WITH ANOTHER BOUNDED CONTEXT
+
         // Personas
         hobbyistUser = person "Enthusiastic Gardener" "Cares for their plants casually at home."
         expertUser = person "Experienced Gardener" "Cares for many or exotic plants, wants more control."
 
         // Dispositivo y servicios externos
         smartPot = softwareSystem "Macetech Smart Pot Hardware" "Smart pot with sensors and actuator for irrigation." "Hardware"
-        externalGemini = softwareSystem "Gemini API" "External AI model for insights." "External"
+
+        firebaseExternalService = softwareSystem "Firebase" "Cloud service for user 2FA authentication and email verification." "External Service"
+        geoAPI = softwareSystem "GeoAPI" "Provides geolocation services." "External Service"
+        plantAPI = softwareSystem "PlantAPI" "Provides plant identification services." "External Service"
+        stripeExternalService = softwareSystem "Stripe" "Payment processing service." "External Service"
 
         macetechPlatform = softwareSystem "Macetech Platform" "An IoT-based platform to monitor and care for plants automatically." {
 
@@ -64,18 +70,229 @@ workspace "Macetech - Smart Gardening Platform" "DDD Strategic Bounded Contexts 
             // Backend monolito
             monolithApp = container "Single unified software application" "Domain-driven monolith exposing HTTP APIs for plant care automation." "C# .NET" {
 
+                // Bounded Contexts de dominio, que son el enfoque del negocio, conteniendo los procesos clave del negocio
                 group "Core Bounded Contexts" {
-                    gardeningRecommendation = component "Gardening recommendation" "Creates personalized recommendations from plant type and reports." "Core BC"
-                    plantRegistration = component "Plant Registration" "Expert knowledge base of plant species and their tolerances." "Core BC"
+
+                    // RECOMENDACIONES DE CUIDADO, SISTEMA DE RIEGO E INTERPRETACION DE REPORTES INCOMPLETO
+                    careIntelligence = component "Care Intelligence Bounded Context" "Creates personalized recommendations from plant type and reports." "Core BC" {
+                        group "Interface Layer" {
+                            careIntelligenceController = component "Care Intelligence Controller" "Handles care intelligence-related requests." "C# .NET"
+                            careIntelligenceACL = component "Care Intelligence Anti Corruption Layer" "Facade to process care intelligence-related requests for other bounded contexts." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            recommendationQueryService = component "Recommendation Query Service" "Handles recommendation-related queries." "C# .NET"
+                            recommendationCommandService = component "Recommendation Command Service" "Handles recommendation-related commands." "C# .NET"
+                            externalReportService = component "External Report Service" "Integrates with external reporting services." "C# .NET"
+                            externalProfileService = component "External Profile Service" "Integrates with external profile services." "C# .NET"
+                            externalPlantService = component "External Plant Service" "Integrates with external plant services." "C# .NET"
+                        }
+                        group "Infrastructure Layer" {
+                            recommendationRepository = component "Recommendation Repository" "Handles recommendation data storage." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            user = component "User" "Represents a user in the system." "C# .NET"
+                            userRole = component "User Role" "Defines roles and permissions for users." "C# .NET"
+                            reportId = component "Report Id Value Object" "Represents a report identification." "C# .NET"
+                            profileId = component "Profile Id Value Object" "Represents a user profile identification." "C# .NET"
+                            plantId = component "Plant Id Value Object" "Represents a plant identification." "C# .NET"                           
+                        }
+                    }
+
+                    // SISTEMA DE RIEGO DE PLANTAS INCOMPLETO                  
+                    wateringManagement = component "Watering Management Bounded Context" "Manages irrigation and watering schedules." "Support BC" {
+                        group "Interface Layer" {
+                            userController = component "User Controller" "Handles user-related requests." "C# .NET"
+                            iamACL = component "IAM Access Control List" "Manages user permissions and roles." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            userQueryService = component "User Query Service" "Handles user-related queries." "C# .NET"
+                            userCommandService = component "User Command Service" "Handles user-related commands." "C# .NET"
+                            2FAService = component "2FA Service" "Handles two-factor authentication." "C# .NET"
+                        }
+                        group "Infrastructure Layer" {
+                            userRepository = component "User Repository" "Handles user data storage." "C# .NET"
+                            firebaseIntegration = component "Firebase Integration" "Integrates with Firebase for email verification and 2FA Multifactor." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            user = component "User" "Represents a user in the system." "C# .NET"
+                            userRole = component "User Role" "Defines roles and permissions for users." "C# .NET"                             
+                        }
+                    }
                 }
 
+                // Bounded Contexts de soporte, que no son el enfoque del negocio pero son necesarios para el funcionamiento de la plataforma
                 group "Support Bounded Contexts" {
-                    reportManagement = component "Report Management" "Analyzes reports delivered from edge app that contains plant context." "Core BC"
-                    aiService = component "AI Service" "Uses external Gemini API to generate AI-based insights." "Support BC"
+
+                    // GESTION DE PLANTAS INCOMPLETO
+                    plantManagement = component "Plant Management Bounded Context" "Expert knowledge base of plant species and their tolerances." "Core BC" {
+                        group "Interface Layer" {
+                            userController = component "User Controller" "Handles user-related requests." "C# .NET"
+                            iamACL = component "IAM Access Control List" "Manages user permissions and roles." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            userQueryService = component "User Query Service" "Handles user-related queries." "C# .NET"
+                            userCommandService = component "User Command Service" "Handles user-related commands." "C# .NET"
+                            2FAService = component "2FA Service" "Handles two-factor authentication." "C# .NET"
+                        }
+                        group "Infrastructure Layer" {
+                            userRepository = component "User Repository" "Handles user data storage." "C# .NET"
+                            firebaseIntegration = component "Firebase Integration" "Integrates with Firebase for email verification and 2FA Multifactor." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            user = component "User" "Represents a user in the system." "C# .NET"
+                            userRole = component "User Role" "Defines roles and permissions for users." "C# .NET"                             
+                        }
+                    }
+
+                    // GESTION DE MACETAS INTELIGENTES INCOMPLETO
+                    potManagement = component "Pot Management Bounded Context" "Manages smart pot configurations and settings." "Core BC" {
+                        group "Interface Layer" {
+                            userController = component "User Controller" "Handles user-related requests." "C# .NET"
+                            iamACL = component "IAM Access Control List" "Manages user permissions and roles." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            userQueryService = component "User Query Service" "Handles user-related queries." "C# .NET"
+                            userCommandService = component "User Command Service" "Handles user-related commands." "C# .NET"
+                            2FAService = component "2FA Service" "Handles two-factor authentication." "C# .NET"
+                        }
+                        group "Infrastructure Layer" {
+                            userRepository = component "User Repository" "Handles user data storage." "C# .NET"
+                            firebaseIntegration = component "Firebase Integration" "Integrates with Firebase for email verification and 2FA Multifactor." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            user = component "User" "Represents a user in the system." "C# .NET"
+                            userRole = component "User Role" "Defines roles and permissions for users." "C# .NET"                             
+                        }
+                    }
+
+                    // GESTION DE ALERTAS Y NOTIFICACIONES INCOMPLETO
+                    systemMonitoring = component "System Monitoring & Control Bounded Context" "Manages Critical Alerts and Notifications from sensors analysis/responses." "Support BC" {
+                        group "Interface Layer" {
+                            userController = component "User Controller" "Handles user-related requests." "C# .NET"
+                            iamACL = component "IAM Access Control List" "Manages user permissions and roles." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            userQueryService = component "User Query Service" "Handles user-related queries." "C# .NET"
+                            userCommandService = component "User Command Service" "Handles user-related commands." "C# .NET"
+                            2FAService = component "2FA Service" "Handles two-factor authentication." "C# .NET"
+                        }
+                        group "Infrastructure Layer" {
+                            userRepository = component "User Repository" "Handles user data storage." "C# .NET"
+                            firebaseIntegration = component "Firebase Integration" "Integrates with Firebase for email verification and 2FA Multifactor." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            user = component "User" "Represents a user in the system." "C# .NET"
+                            userRole = component "User Role" "Defines roles and permissions for users." "C# .NET"                             
+                        }
+                    }
+                    
+                    // GESTION DE REPORTES Y ANALITICA INCOMPLETO
+                    datainsights&reporting = component "Data Insights & Reporting Bounded Context" "Generates reports and insights from plant data." "Support BC" {
+                        group "Interface Layer" {
+                            reportController = component "Report Controller" "Handles report-related requests." "C# .NET"
+                            reportACL = component "Report Anti Corruption Layer" "Facade to process report-related requests for other bounded contexts." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            reportQueryService = component "Report Query Service" "Handles report-related queries." "C# .NET"
+                            reportCommandService = component "Report Command Service" "Handles report-related commands." "C# .NET"                        }
+                        group "Infrastructure Layer" {
+                            userRepository = component "User Repository" "Handles user data storage." "C# .NET"
+                            firebaseIntegration = component "Firebase Integration" "Integrates with Firebase for email verification and 2FA Multifactor." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            user = component "User" "Represents a user in the system." "C# .NET"
+                            userRole = component "User Role" "Defines roles and permissions for users." "C# .NET"                             
+                        }
+                    }
                 }
+                
+                // Bounded Contexts Genericos, no relacionados con el dominio ni enfoque del negocio
                 group "Generic/Commodity Bounded Contexts" {
-                    userManagement = component "User Management" "Handles user identification, password recovery and user registration." "Commodity BC"
-                    profiles = component "Profiles" "Manages identities, roles, and access control." "Commodity BC"
+
+                    // AUTENTICACION Y REGISTRO DE USUARIOS
+                    iamManagement = component "Identification Authentication Management Bounded Context" "Handles user identification and registration." "Commodity BC"{
+                        group "Interface Layer" {
+                            authController = component "User Controller" "Handles user-related requests." "C# .NET"
+                            iamACL = component "IAM Access Control List" "Manages user permissions and roles." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            authQueryService = component "User Query Service" "Handles user-related queries." "C# .NET"
+                            authCommandService = component "User Command Service" "Handles user-related commands." "C# .NET"
+                            2FAService = component "2FA Service" "Handles two-factor authentication." "C# .NET"
+                        }
+                        group "Infrastructure Layer" {
+                            authRepository = component "User Repository" "Handles user data storage." "C# .NET"
+                            firebaseIntegration = component "Firebase Integration" "Integrates with Firebase for email verification and 2FA Multifactor." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            user = component "User Aggregate" "Represents a user in the system." "C# .NET"
+                            userRole = component "User Role Entity" "Defines roles and permissions for users." "C# .NET"                         
+                        }
+                    }
+    
+                    // GESTION DE USUARIOS (Conexion con Profile BC)
+                    accountManagement = component "Account Management Bounded Context" "Manages user accounts (Delete account, change username or password) and recovery password." "Commodity BC" {
+                        group "Interface Layer" {
+                            accountController = component "User Controller" "Handles account-related requests." "C# .NET"
+                            accountACL = component "IAM Anti Corruption Layer" "Facade to process account-related requests for other bounded contexts." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            accountQueryService = component "User Query Service" "Handles account-related queries." "C# .NET"
+                            accountCommandService = component "User Command Service" "Handles account-related commands." "C# .NET"
+                            2FAService = component "2FA Service" "Handles two-factor authentication." "C# .NET"
+                        }
+                        group "Infrastructure Layer" {
+                            accountRepository = component "User Repository" "Handles account data storage." "C# .NET"
+                            firebaseIntegration = component "Firebase Integration" "Integrates with Firebase for email verification and 2FA Multifactor." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            account = component "Account Aggregate" "Represents a user account in the system." "C# .NET"
+                        }
+                    }
+
+
+                    // PERFILES DE USUARIOS (Conexion con userManagement BC) 
+                    profiles&PersonalData = component "Profiles and Personal Data Bounded Context" "Manages Personal Data for user like reference and contact (Phone Number, Adress, etc.)." "Commodity BC" {
+                        group "Interface Layer" {
+                            profileController = component "Profile Controller" "Handles profile-related requests." "C# .NET"
+                            profileACL = component "Profile Anti Corruption Layer" "Facade to process profile-related requests for other bounded contexts." "C# .NET"
+                            
+                        }
+                        group "Application Layer" {
+                            profileQueryService = component "Profile Query Service" "Handles profile-related queries." "C# .NET"
+                            profileCommandService = component "Profile Command Service" "Handles profile-related commands." "C# .NET"
+                            
+                        }
+                        group "Infrastructure Layer" {
+                            profileRepository = component "Profile Repository" "Handles profile data storage." "C# .NET"
+                            geoAPIIntegration = component "GeoAPI Integration" "Integrates with GeoAPI for geolocation services." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            profile = component "Profile Aggregate" "Represents a user profile in the system." "C# .NET"
+                        }
+                    }
+
+                    // GESTION DE SUSCRIPCIONES Y PAGOS (Conexion con Stripe? y Profile BC)
+                    suscriptions&Payments = component "Suscriptions and Payments Bounded Context" "Handles user subscriptions and payments." "Commodity BC" {
+                        group "Interface Layer" {
+                            subscriptionController = component "Subscription Controller" "Handles subscription-related requests." "C# .NET"
+                            subscriptionACL = component "Subscription Anti Corruption Layer" "Facade to process subscription-related requests for other bounded contexts." "C# .NET"
+                        }
+                        group "Application Layer" {
+                            subscriptionQueryService = component "Subscription Query Service" "Handles subscription-related queries." "C# .NET"
+                            subscriptionCommandService = component "Subscription Command Service" "Handles subscription-related commands." "C# .NET"
+                            2FAService = component "2FA Service" "Handles two-factor authentication." "C# .NET"
+                            externalPaymentService = component "External Payment Service" "Integrates with external payment services." "C# .NET"
+                        }
+                        group "Infrastructure Layer" {
+                            subscriptionRepository = component "Subscription Repository" "Handles subscription data storage." "C# .NET"
+                            stripeIntegration = component "Stripe Integration" "Integrates with Stripe for payment processing." "C# .NET"
+                        }
+                        group "Domain Layer" {
+                            subscription = component "Subscription Aggregate" "Represents a user subscription in the system." "C# .NET"
+                            payment = component "Payment Aggregate" "Represents a payment transaction in the system." "C# .NET"
+                        }
+                    }
                 }
             }
         }
