@@ -1,51 +1,60 @@
-workspace "Macetech - Smart Gardening Platform" "DDD Strategic Bounded Contexts in a .NET MVC monolithic architecture with frontend clients" {
+workspace "Macetech - Smart Gardening Platform" "An IoT-based platform to monitor and care for plants automatically, modeled similarly to Big Bank plc example." {
+
 
     model {
-
-// PLEASE REMEMBER, AN OUTBOUND SERVICE IS A SERVICE THAT A BOUNDED CONTEXT USES TO COMMUNICATE WITH ANOTHER BOUNDED CONTEXT
 
         // Personas
         hobbyistUser = person "Enthusiastic Gardener" "Cares for their plants casually at home."
         expertUser = person "Experienced Gardener" "Cares for many or exotic plants, wants more control."
 
         // Dispositivo y servicios externos
-        smartPot = softwareSystem "Macetech Smart Pot Hardware" "Smart pot with sensors and actuator for irrigation." "Hardware"
-
-        firebaseExternalService = softwareSystem "Firebase" "Cloud service for user 2FA authentication and email verification." "External Service"
-        geoAPI = softwareSystem "GeoAPI" "Provides geolocation services." "External Service"
-        plantAPI = softwareSystem "PlantAPI" "Provides plant identification services." "External Service"
-        stripeExternalService = softwareSystem "Stripe" "Payment processing service." "External Service"
+        smartPot = softwareSystem "Macetech Smart Pot Hardware" "Smart pot with sensors and actuator for irrigation." "Hardware" {
+            tags "External System"
+        }
+        firebaseExternalService = softwareSystem "Firebase" "Cloud service for user 2FA authentication and email verification." "External Service" {
+            tags "External System"
+        }
+        geoAPI = softwareSystem "GeoAPI" "Provides geolocation services." "External Service" {
+            tags "External System"
+        }
+        plantAPI = softwareSystem "PlantAPI" "Provides plant identification services." "External Service" {
+            tags "External System"
+        }
+        stripeExternalService = softwareSystem "Stripe" "Payment processing service." "External Service" {
+            tags "External System"
+        }
 
         macetechPlatform = softwareSystem "Macetech Platform" "An IoT-based platform to monitor and care for plants automatically." {
 
-            LandingPageWebsite = container "Macetech Landing Page" "Landing page for the Macetech platform." "HTML5/CSS/JavaScript" {
+            // Contenedor Landing Page
+            landingPageWebsite = container "Macetech Landing Page" "Landing page for the Macetech platform." "HTML5/CSS/JavaScript" {
                 uiWeb = component "Web UI" "Shows plant care features, team members, contact information and contains a call to action." "HTML5/CSS/JavaScript"
             }
 
-            // Contenedor WCA
-            WebClientApp = container "Macetech Web Client App" "Client-Side Angular frontend application executed in user's browser that consumes backend APIs." "Angular" {
-                uiWCAAuth = component "WCA Login Component" "Handles login and session state." "Angular"
-                uiWCAHome = component "WCA Home Component" "Displays the rest of components and has a toolbar to navigate through the application." "Angular"
-                uiWCADashboard = component "WCA Dashboard Component" "Displays a list of smart pots linked to the users profile." "Angular"
-                uiWCAPotDetails = component "WCA Pot Details Component" "Displays detailed information about a specific smart pot." "Angular"
-                uiWCASettings = component "WCA Settings Component" "Manages user preferences and configurations for smart pots like irrigation, report generation, etc." "Angular"
-                uiWCAProfile = component "WCA Profile Component" "Manages user profile." "Angular"                
+            // Contenedor Web Client App (WCA)
+            webClientApp = container "Macetech Single Page Client App" "Client-Side Angular frontend application executed in user's browser that consumes backend APIs." "Angular" "Web Browser" {
+                wcaAuth = component "WCA Login Component" "Handles login and session state." "Angular"
+                wcaHome = component "WCA Home Component" "Displays the rest of components and has a toolbar to navigate through the application." "Angular"
+                wcaDashboard = component "WCA Dashboard Component" "Displays a list of smart pots linked to the users profile." "Angular"
+                wcaPotDetails = component "WCA Pot Details Component" "Displays detailed information about a specific smart pot." "Angular"
+                wcaSettings = component "WCA Settings Component" "Manages user preferences and configurations for smart pots like irrigation, report generation, etc." "Angular"
+                wcaProfile = component "WCA Profile Component" "Manages user profile." "Angular"
             }
 
             // Contenedor Mobile App
-            mobileApp = container "Mobile Application" "Flutter-based mobile app consuming backend APIs." "Flutter" {
-                uiMobileLogin = component "Mobile Login Screen" "Authenticates the user and initializes session." "Flutter"
-                uiMobilePotRegister = component "Mobile Pot Register Screen" "Sends the user to the camera to scan the QR." "Flutter"                                
-                uiMobilePasswordRecovery = component "Mobile Password Recovery Screen" "Handles password recovery for users." "Flutter"                
-                uiMobilePotDetails = component "Mobile Pot Details Screen" "Modifies settings, preferences, etc. for smart pots like irrigation, report generation, etc.." "Flutter"                
-                uiPlantIdentification = component "Mobile Plant Identification Screen" "Identifies plants using user inputs." "Flutter"                
-                uiMobileHome = component "Mobile Home Screen" "Displays the rest of components and has a toolbar to navigate through the application." "Flutter"
-                uiMobileDashboard = component "Mobile Dashboard" "Displays a list of smart pots linked to the users profile." "Flutter"
-                uiMobileGardeningRecommendation = component "Mobile Gardening Recommendation Screen" "Provides gardening recommendations based on Plant Identification." "Flutter"                               
-                uiMobileNotifications = component "Mobile Notifications" "Shows recommendations and alerts." "Flutter"
-                uiMobileSensorsAlert = component "Mobile Sensors Alert" "Handles alerts from sensors." "Flutter"
-                uiMobileSettings = component "Mobile Settings" "User preferences and configurations." "Flutter"
-                uiMobileProfile = component "Mobile Profile" "User profile management." "Flutter"
+            mobileApp = container "Mobile Application" "Flutter-based mobile app consuming backend APIs." "Flutter" "Mobile App" {
+                mobLogin = component "Mobile Login Screen" "Authenticates the user and initializes session." "Flutter"
+                mobPotRegister = component "Mobile Pot Register Screen" "Sends the user to the camera to scan the QR." "Flutter"
+                mobPasswordRecovery = component "Mobile Password Recovery Screen" "Handles password recovery for users." "Flutter"
+                mobPotDetails = component "Mobile Pot Details Screen" "Modifies settings, preferences, etc. for smart pots like irrigation, report generation, etc." "Flutter"
+                mobPlantIdentification = component "Mobile Plant Identification Screen" "Identifies plants using user inputs." "Flutter"
+                mobHome = component "Mobile Home Screen" "Displays the rest of components and has a toolbar to navigate through the application." "Flutter"
+                mobDashboard = component "Mobile Dashboard" "Displays a list of smart pots linked to the users profile." "Flutter"
+                mobGardeningRecommendation = component "Mobile Gardening Recommendation Screen" "Provides gardening recommendations based on Plant Identification." "Flutter"
+                mobNotifications = component "Mobile Notifications Component" "Shows recommendations and alerts." "Flutter" 
+                mobSensorsAlert = component "Mobile Sensors Alert Component" "Handles alerts from sensors." "Flutter"      
+                mobSettings = component "Mobile Settings Component" "User preferences and configurations." "Flutter"      
+                mobProfile = component "Mobile Profile Component" "User profile management." "Flutter"        
             }
 
             // Bases de datos
@@ -55,563 +64,535 @@ workspace "Macetech - Smart Gardening Platform" "DDD Strategic Bounded Contexts 
 
             // App de borde (edge)
             edgeApp = container "Edge Application" "Edge software for plant analytics." "Python" {
-                plantContext = component "Plant Context" "Generates plant reports from parameters." "Python"
-                plantIdentification = component "Plant Identification" "Sets information of the plant inside the Smart Pot." "Python"    
-                noticeSystem = component "Notification System" "Sends a notice to the user with the reports and recommendations." "Python"
+                edgeMonitoring = component "Edge Monitoring" "Monitors pot sensors data." "Python"
+                edgeWatering = component "Edge Watering" "Controls irrigation based on sensor data." "Python"
+                edgeNoticeSystem = component "Notification System" "Sends a notice to the user with the reports and recommendations." "Python"
             }
 
             // App embebida
             embeddedApp = container "Embedded Application" "Embedded software controlling the Smart Pot Hardware." "C++" {
-                parameterManager = component "Harvesting Parameter Manager" "Manages plant parameters." "C++"
-                deviceController = component "Device Controller" "Interacts with sensors." "C++"                
+                embParameterManager = component "Harvesting Parameter Manager" "Manages plant parameters." "C++"
+                embDeviceController = component "Device Controller" "Interacts with sensors." "C++"
             }
 
-            // API monolítica
-            monolithApp = container "Single unified software application" "Domain-driven monolith exposing HTTP APIs for plant care automation." "C# .NET" {
-
-                // Bounded Contexts de dominio, que son el enfoque del negocio, conteniendo los procesos clave del negocio
-                group "Core Bounded Contexts" {
-
-                    
-                    // --- Care Intelligence ---
-                    //  - Plant Registration: Registro de plantas, tolerancias, etc.
-                    component "Care Intelligence Controller" "Handles care intelligence-related requests." "C# .NET" {
-                    tags "CareIntelligence", "Interface Layer"
-                    }
-
-                    component "Care Intelligence Anti Corruption Layer" "Facade for other Bounded Contexts." "C# .NET" {
-                        tags "CareIntelligence", "Interface Layer"
-                    }
-
-                    component "Recommendation Query Service" "Handles recommendation queries." "C# .NET" {
-                        tags "CareIntelligence", "Application Layer"
-                    }
-
-                    component "Recommendation Command Service" "Handles recommendation commands." "C# .NET" {
-                        tags "CareIntelligence", "Application Layer"
-                    }
-
-                    component "External Report Service" "Integrates with external reporting." "C# .NET" {
-                        tags "CareIntelligence", "Application Layer"
-                    }
-
-                    component "External Profile Service" "Integrates with external profile services." "C# .NET" {
-                        tags "CareIntelligence", "Application Layer"
-                    }
-
-                    component "External Plant Service" "Integrates with external plant services." "C# .NET" {
-                        tags "CareIntelligence", "Application Layer"
-                    }
-
-                    component "Recommendation Repository" "Handles recommendation persistence." "C# .NET" {
-                        tags "CareIntelligence", "Infrastructure Layer"
-                    }
-
-                    component "User" "Represents a user in the system." "C# .NET" {
-                        tags "CareIntelligence", "Domain Layer"
-                    }
-
-                    component "User Role" "Defines user roles." "C# .NET" {
-                        tags "CareIntelligence", "Domain Layer"
-                    }
-
-                    component "Report Id Value Object" "Represents a report ID." "C# .NET" {
-                        tags "CareIntelligence", "Domain Layer"
-                    }
-
-                    component "Profile Id Value Object" "Represents a profile ID." "C# .NET" {
-                        tags "CareIntelligence", "Domain Layer"
-                    }
-
-                    component "Plant Id Value Object" "Represents a plant ID." "C# .NET" {
-                        tags "CareIntelligence", "Domain Layer"
-                    }
-
-                    // --- Watering Management ---
-                    //  - Watering: Manejo de riego, condiciones, etc.
-                    component "Watering Controller" "Handles watering requests." "C# .NET" {
-                        tags "WateringManagement", "Interface Layer"
-                    }
-
-                    component "Watering Anti Corruption Layer" "Facade for watering logic." "C# .NET" {
-                        tags "WateringManagement", "Interface Layer"
-                    }
-
-                    component "Watering Query Service" "Handles watering queries." "C# .NET" {
-                        tags "WateringManagement", "Application Layer"
-                    }
-
-                    component "Watering Command Service" "Handles watering commands." "C# .NET" {
-                        tags "WateringManagement", "Application Layer"
-                    }
-
-                    component "Watering Repository" "Stores watering data." "C# .NET" {
-                        tags "WateringManagement", "Infrastructure Layer"
-                    }
-
-                    component "Watering Schedule" "Represents watering schedules." "C# .NET" {
-                        tags "WateringManagement", "Domain Layer"
-                    }
-
-                    component "Watering Condition" "Represents watering conditions." "C# .NET" {
-                        tags "WateringManagement", "Domain Layer"
-                    }
+            // API Monolítica
+            monolithApp = container "Monolithic API Application" "Domain-driven monolith exposing HTTP APIs for plant care automation." "C# .NET" {
+                
+                group "Care Intelligence Bounded Context Components (Core BC)" {
+                    coreCareIntelligenceController = component "Care Intelligence Controller" "Handles care intelligence-related requests. " "C# .NET Controller"
+                    coreCareIntelligenceAggregate = component "Recommendation Aggregate" "Root aggregate for care intelligence. " "C# .NET Domain Model"
+                    coreRecommendationRepo = component "Recommendation Repository" "Handles recommendation persistence. " "C# .NET Repository"
                 }
 
-                // Bounded Contexts de soporte, que no son el enfoque del negocio pero son necesarios para el funcionamiento de la plataforma
-                group "Support Bounded Contexts" {
-
-                    // --- Plant Management ---
-                    //  - Plant Registration: Registro de plantas, tolerancias, etc.
-                    component "User Controller" "Handles user requests." "C# .NET" {
-                        tags "PlantManagement", "Interface Layer"
-                    }
-
-                    component "IAM Access Control List" "Manages access and roles." "C# .NET" {
-                        tags "PlantManagement", "Interface Layer"
-                    }
-
-                    component "User Query Service" "Handles user queries." "C# .NET" {
-                        tags "PlantManagement", "Application Layer"
-                    }
-
-                    component "User Command Service" "Handles user commands." "C# .NET" {
-                        tags "PlantManagement", "Application Layer"
-                    }
-
-                    component "2FA Service" "Handles two-factor authentication." "C# .NET" {
-                        tags "PlantManagement", "Application Layer"
-                    }
-
-                    component "User Repository" "Stores user data." "C# .NET" {
-                        tags "PlantManagement", "Infrastructure Layer"
-                    }
-
-                    component "Firebase Integration" "Firebase for auth/2FA." "C# .NET" {
-                        tags "PlantManagement", "Infrastructure Layer"
-                    }
-
-                    component "User" "Represents a user." "C# .NET" {
-                        tags "PlantManagement", "Domain Layer"
-                    }
-
-                    component "User Role" "Defines user roles." "C# .NET" {
-                        tags "PlantManagement", "Domain Layer"
-                    }
-
-                    // --- Plant Registration ---
-                    //  - Plant Registration: Registro de plantas, tolerancias, etc.
-                    component "Alert Controller" "Handles alert requests." "C# .NET" {
-                        tags "SystemMonitoring", "Interface Layer"
-                    }
-
-                    component "Notification Controller" "Handles notification requests." "C# .NET" {
-                        tags "SystemMonitoring", "Interface Layer"
-                    }
-
-                    component "Alert Anti Corruption Layer" "Facade for alerts." "C# .NET" {
-                        tags "SystemMonitoring", "Interface Layer"
-                    }
-
-                    component "Notification Anti Corruption Layer" "Facade for notifications." "C# .NET" {
-                        tags "SystemMonitoring", "Interface Layer"
-                    }
-
-                    component "Alert Query Service" "Queries alerts." "C# .NET" {
-                        tags "SystemMonitoring", "Application Layer"
-                    }
-
-                    component "Alert Command Service" "Commands for alerts." "C# .NET" {
-                        tags "SystemMonitoring", "Application Layer"
-                    }
-
-                    component "Notification Query Service" "Queries notifications." "C# .NET" {
-                        tags "SystemMonitoring", "Application Layer"
-                    }
-
-                    component "Notification Command Service" "Commands for notifications." "C# .NET" {
-                        tags "SystemMonitoring", "Application Layer"
-                    }
-
-                    component "Alert Repository" "Stores alerts." "C# .NET" {
-                        tags "SystemMonitoring", "Infrastructure Layer"
-                    }
-
-                    component "Notification Repository" "Stores notifications." "C# .NET" {
-                        tags "SystemMonitoring", "Infrastructure Layer"
-                    }
-
-                    component "Alert" "Represents an alert." "C# .NET" {
-                        tags "SystemMonitoring", "Domain Layer"
-                    }
-
-                    component "Notification" "Represents a notification." "C# .NET" {
-                        tags "SystemMonitoring", "Domain Layer"
-                    }
-
-                    // --- Report Management ---
-                    //  - Report Management: Generación de reportes, métricas, etc.
-                    component "Report Controller" "Handles report requests." "C# .NET" {
-                        tags "DataInsights", "Interface Layer"
-                    }
-
-                    component "Sensor Controller" "Handles sensor requests." "C# .NET" {
-                        tags "DataInsights", "Interface Layer"
-                    }
-
-                    component "Report Anti Corruption Layer" "Facade for reporting." "C# .NET" {
-                        tags "DataInsights", "Interface Layer"
-                    }
-
-                    component "Report Query Service" "Handles report queries." "C# .NET" {
-                        tags "DataInsights", "Application Layer"
-                    }
-
-                    component "Report Command Service" "Handles report commands." "C# .NET" {
-                        tags "DataInsights", "Application Layer"
-                    }
-
-                    component "External Sensor Service" "Integrates with sensors." "C# .NET" {
-                        tags "DataInsights", "Application Layer"
-                    }
-
-                    component "Report Repository" "Stores reports." "C# .NET" {
-                        tags "DataInsights", "Infrastructure Layer"
-                    }
-
-                    component "Sensor Repository" "Stores sensor data." "C# .NET" {
-                        tags "DataInsights", "Infrastructure Layer"
-                    }
-
-                    component "Report Aggregate" "Represents a report." "C# .NET" {
-                        tags "DataInsights", "Domain Layer"
-                    }
-
-                    component "Report Metrics" "Represents metrics." "C# .NET" {
-                        tags "DataInsights", "Domain Layer"
-                    }
-
-                    component "Sensor Data" "Sensor measurements." "C# .NET" {
-                        tags "DataInsights", "Domain Layer"
-                    }
-
-                    component "Sensor" "Represents a sensor." "C# .NET" {
-                        tags "DataInsights", "Domain Layer"
-                    }
+                group "Watering Bounded Context Components (Core BC)" { 
+                    coreWateringController = component "Watering Controller" "Handles watering requests. " "C# .NET Controller"
+                    coreWateringRepo = component "Watering Repository" "Stores watering data. " "C# .NET Repository"
+                    coreWateringCondition = component "Watering Condition" "Represents watering conditions. " "C# .NET Domain Model"
                 }
-                // Bounded Contexts Genericos, no relacionados con el dominio ni enfoque del negocio
-                group "Generic/Commodity Bounded Contexts" {
 
-                    // --- User Management ---
-                    //  - User Management: Manejo de usuarios, autenticación, etc.
-                    component "User Management Controller" "Handles user management requests." "C# .NET" {
-                        tags "IAM", "Interface Layer"
-                    }
+                group "Pot Management Bounded Context Components (Support BC)" {
+                    sptPotController = component "Pot Controller" "Handles pot-related requests. " "C# .NET Controller"
+                    sptPotRepo = component "Pot Repository" "Stores pot data. " "C# .NET Repository"
+                    sptPotAggregate = component "Pot Aggregate" "Represents a smart pot. " "C# .NET Domain Model"
+                }
 
-                    component "User Management Anti Corruption Layer" "Facade for user management." "C# .NET" {
-                        tags "IAM", "Interface Layer"
-                    }
-                   component "User Controller" "Handles user-related requests." "C# .NET" {
-                        tags "IAM", "Interface Layer"
-                    }
+                group "Plant Bounded Context Components (Support BC)" {
+                    sptPlantController = component "Plant Controller" "Handles /plants endpoints. " "C# .NET Controller"
+                    sptPlantRepo = component "Plant Repository" "Persists species and tolerance data. " "C# .NET Repository"
+                    sptPlantApiIntegration = component "PlantAPI Integration" "Client for external plant API. " "C# .NET Integration"
+                    sptPlantAggregate = component "Plant Aggregate" "Root aggregate for plant entity. " "C# .NET Domain Model"
+                }
 
-                    component "IAM Access Control List" "Manages user roles and permissions." "C# .NET" {
-                        tags "IAM", "Interface Layer"
-                    }
+                group "System Monitoring & Control Bounded Context Components (Support BC)" {
+                    sptAlertController = component "Alert Controller" "Handles /alerts endpoints. " "C# .NET Controller"
+                    sptAlertRepo = component "Alert Repository" "Persists system alerts. " "C# .NET Repository"
+                    sptAlertAggregate = component "Alert Aggregate" "Root for sensor alerts. " "C# .NET Domain Model"
+                    sptNotificationAggregate = component "Notification Aggregate" "Scheduled push/email notifications. " "C# .NET Domain Model"
+                }
 
-                    component "User Query Service" "Handles user-related queries." "C# .NET" {
-                        tags "IAM", "Application Layer"
-                    }
+                group "Data Insights & Reporting Bounded Context (Support BC)" {
+                    sptReportController = component "Report Controller" "Handles /reports endpoints. " "C# .NET Controller"
+                    sptSensorController = component "Sensor Controller" "Handles /sensor-data endpoints. " "C# .NET Controller"
+                    sptReportRepo = component "Report Repository" "Stores generated reports. " "C# .NET Repository"
+                    sptSensorRepo = component "Sensor Repository" "Persists raw sensor data. " "C# .NET Repository"
+                    sptReportAggregate = component "Report Aggregate" "Container for metrics and analysis. " "C# .NET Domain Model"
+                    sptSensorDataVO = component "Sensor Data Value Object" "Sensor readings with metadata. " "C# .NET Domain Model"
+                }
 
-                    component "User Command Service" "Handles user-related commands." "C# .NET" {
-                        tags "IAM", "Application Layer"
-                    }
+                group "Identification Authentication Management Bounded Context (Commodity BC)" {
+                    genUserController = component "Auth Controller" "Handles user-related requests. " "C# .NET Controller"
+                    genUserManagementController = component "User Management Controller" "Handles user management requests. " "C# .NET Controller"
+                    genTwoFAService = component "2FA Service" "Handles two-factor authentication. " "C# .NET Service"
+                    genFirebaseIntegration = component "Firebase Integration" "Integrates with Firebase for 2FA. " "C# .NET Integration"
+                    genUserRepo = component "User Repository" "Handles user data storage. " "C# .NET Repository"
+                    genUserAggregate = component "User Aggregate" "Represents a user in the system. " "C# .NET Domain Model"
+                    genUserRoleEntity = component "User Role Entity" "Defines user roles and permissions. " "C# .NET Domain Model"
+                }
 
-                    component "2FA Service" "Handles two-factor authentication." "C# .NET" {
-                        tags "IAM", "Application Layer"
-                    }
+                group "Profiles and Personal Data Bounded Context (Commodity BC)" {
+                    genProfileController = component "Profile Controller" "Handles profile-related requests. " "C# .NET Controller"
+                    genProfileRepo = component "Profile Repository" "Handles profile data storage. " "C# .NET Repository"
+                    genGeoApiIntegration = component "GeoAPI Integration" "Integrates with GeoAPI for geolocation. " "C# .NET Integration"
+                    genProfileAggregate = component "Profile Aggregate" "Represents a user profile. " "C# .NET Domain Model"
+                }
+                
+                
 
-                    component "User Repository" "Handles user data storage." "C# .NET" {
-                        tags "IAM", "Infrastructure Layer"
-                    }
-
-                    component "Firebase Integration" "Integrates with Firebase for 2FA and verification." "C# .NET" {
-                        tags "IAM", "Infrastructure Layer"
-                    }
-
-                    component "User Aggregate" "Represents a user in the system." "C# .NET" {
-                        tags "IAM", "Domain Layer"
-                    }
-
-                    component "User Role Entity" "Defines user roles and permissions." "C# .NET" {
-                        tags "IAM", "Domain Layer"
-                    }
-
-                    // --- Profile Management ---
-                    //  - Profile Management: Manejo de perfiles, preferencias, etc.
-                    component "Profile Controller" "Handles profile-related requests." "C# .NET" {
-                        tags "Profiles", "Interface Layer"
-                    }
-
-                    component "Profile Anti Corruption Layer" "Facade to process profile-related requests." "C# .NET" {
-                        tags "Profiles", "Interface Layer"
-                    }
-
-                    component "Profile Query Service" "Handles profile-related queries." "C# .NET" {
-                        tags "Profiles", "Application Layer"
-                    }
-
-                    component "Profile Command Service" "Handles profile-related commands." "C# .NET" {
-                        tags "Profiles", "Application Layer"
-                    }
-
-                    component "Profile Repository" "Handles profile data storage." "C# .NET" {
-                        tags "Profiles", "Infrastructure Layer"
-                    }
-
-                    component "GeoAPI Integration" "Integrates with GeoAPI for geolocation." "C# .NET" {
-                        tags "Profiles", "Infrastructure Layer"
-                    }
-
-                    component "Profile Aggregate" "Represents a user profile in the system." "C# .NET" {
-                        tags "Profiles", "Domain Layer"
-                    }
-
-                    component "Subscription Controller" "Handles subscription requests." "C# .NET" {
-                        tags "Subscriptions", "Interface Layer"
-                    }
-
-                    // --- Subscription Management ---
-                    // - Subscription Management: Manejo de suscripciones, pagos, etc.
-                    component "Subscription Anti Corruption Layer" "Facade for subscriptions." "C# .NET" {
-                        tags "Subscriptions", "Interface Layer"
-                    }
-
-                    component "Subscription Query Service" "Handles subscription queries." "C# .NET" {
-                        tags "Subscriptions", "Application Layer"
-                    }
-
-                    component "Subscription Command Service" "Handles subscription commands." "C# .NET" {
-                        tags "Subscriptions", "Application Layer"
-                    }
-
-                    component "2FA Service" "Handles two-factor auth." "C# .NET" {
-                        tags "Subscriptions", "Application Layer"
-                    }
-
-                    component "External Payment Service" "Integrates with Stripe." "C# .NET" {
-                        tags "Subscriptions", "Application Layer"
-                    }
-
-                    component "Subscription Repository" "Stores subscription data." "C# .NET" {
-                        tags "Subscriptions", "Infrastructure Layer"
-                    }
-
-                    component "Stripe Integration" "Handles payment integration with Stripe." "C# .NET" {
-                        tags "Subscriptions", "Infrastructure Layer"
-                    }
-
-                    component "Subscription Aggregate" "Represents a user subscription." "C# .NET" {
-                        tags "Subscriptions", "Domain Layer"
-                    }
-
-                    component "Payment Aggregate" "Represents a payment." "C# .NET" {
-                        tags "Subscriptions", "Domain Layer"
-                    } 
+                group "Subscription Bounded Context Components (Commodity BC)" {
+                    genSubscriptionController = component "Subscription Controller" "Handles subscription requests. " "C# .NET Controller"
+                    genSubscriptionRepo = component "Subscription Repository" "Stores subscription data. " "C# .NET Repository"
+                    genStripeIntegration = component "Stripe Integration" "Handles payment integration with Stripe. " "C# .NET Integration"
+                    genSubscriptionAggregate = component "Subscription Aggregate" "Represents a user subscription. " "C# .NET Domain Model"
+                    genPaymentAggregate = component "Payment Aggregate" "Represents a payment. " "C# .NET Domain Model"
                 }
             }
         }
 
-        // Relaciones usuario → UI
-        hobbyistUser -> uiWeb "Browses marketing and informational content"
-        expertUser -> uiWeb "Browses marketing and informational content"
+        // Relationships
+        hobbyistUser -> uiWeb "Browses marketing and informational content" "HTTPS"
+        expertUser -> uiWeb "Browses marketing and informational content" "HTTPS"
 
-        hobbyistUser -> uiWCAAuth "Authenticates to access web application"
-        expertUser -> uiWCAAuth "Authenticates to access web application"
-        uiWCAAuth -> uiWCAHome "Redirects user to home view after login"
-        uiWCAHome -> uiWCADashboard "Navigates to dashboard to view linked smart pots"
-        uiWCAHome -> uiWCASettings "Navigates to settings to manage pot configurations"
-        uiWCAHome -> uiWCAProfile "Navigates to user profile"
+        uiWeb -> webClientApp "Navigates to web client application" "HTTPS"
 
-        uiWCAProfile -> monolithApp "Updates and retrieves user profile information"
-        uiWCADashboard -> monolithApp "Retrieves list of smart pots for the user"
-        uiWCASettings -> monolithApp "Saves and loads pot configuration data"
-        uiWCAAuth -> monolithApp "Performs login and session handling"
+        hobbyistUser -> wcaAuth "Authenticates to access web application" "HTTPS"
+        expertUser -> wcaAuth "Authenticates to access web application" "HTTPS"
+        wcaAuth -> wcaHome "Redirects user to home view after login"
+        wcaHome -> wcaDashboard "Navigates to dashboard to view linked smart pots"
+        wcaHome -> wcaSettings "Navigates to settings to manage pot configurations"
+        wcaHome -> wcaProfile "Navigates to user profile"
 
-        hobbyistUser -> uiMobileLogin "Accesses mobile application login"
-        expertUser -> uiMobileLogin "Accesses mobile application login"
-        uiMobileLogin -> uiMobilePotRegister "Navigates to register new pot"
-        uiMobilePotRegister -> uiMobileLogin "Returns to login after registration"
-        uiMobileLogin -> uiMobileHome "Accesses mobile home screen after login"
-        uiMobileLogin -> uiMobilePasswordRecovery "Recovers user password"
-        uiMobileHome -> uiMobileDashboard "Navigates to dashboard"
-        uiMobileHome -> uiMobileSettings "Navigates to app or pot settings"
-        uiMobileHome -> uiMobileProfile "Navigates to user profile"
-        uiMobilePotRegister -> uiMobilePotDetails "Navigates to detailed view of registered pot"
-        uiMobilePotDetails -> uiPlantIdentification "Triggers plant identification based on pot data"
-        uiMobilePotDetails -> uiMobileGardeningRecommendation "Requests recommendations for identified plant"
-        uiMobileHome -> uiMobileNotifications "Displays system notifications and alerts"
-        uiMobileHome -> uiMobileSensorsAlert "Displays sensor-based alerts"
+        // Relaciones entre Bounded Contexts (Solo mediante controllers)
+        // Web Client → Monolith
+        wcaProfile -> genProfileController "Updates profile via API" "JSON/HTTPS"
+        wcaDashboard -> sptPlantController "Gets user's plants" "JSON/HTTPS"
+        wcaSettings -> coreWateringController "Updates configurations" "JSON/HTTPS"
+        wcaAuth -> genUserController "Authenticates via JWT" "JSON/HTTPS"
 
-        uiMobilePotDetails -> mobileDB "Reads and stores pot-specific local data"
-        uiMobileGardeningRecommendation -> mobileDB "Stores and retrieves plant care suggestions"
-        uiMobileSettings -> mobileDB "Persists user-defined settings"
-        uiMobileProfile -> mobileDB "Stores profile data locally"
-        uiMobileNotifications -> mobileDB "Stores and retrieves notifications"
-        uiMobileSensorsAlert -> mobileDB "Reads alerts from local storage"
+        // Mobile App relationships
+        hobbyistUser -> mobLogin "Accesses mobile application login"
+        expertUser -> mobLogin "Accesses mobile application login"
+        mobLogin -> mobPotRegister "Navigates to register new pot"
+        mobPotRegister -> mobLogin "Returns to login after registration"
+        mobLogin -> mobHome "Accesses mobile home screen after login"
+        mobLogin -> mobPasswordRecovery "Recovers user password"
+        mobHome -> mobDashboard "Navigates to dashboard"
+        mobHome -> mobSettings "Navigates to app or pot settings"
+        mobHome -> mobProfile "Navigates to user profile"
+        mobPotRegister -> mobPotDetails "Navigates to detailed view"
+        mobPotDetails -> mobPlantIdentification "Triggers plant identification"
+        mobPotDetails -> mobGardeningRecommendation "Requests recommendations"
+        mobHome -> mobNotifications "Displays notifications"
+        mobHome -> mobSensorsAlert "Displays sensor alerts"
 
-        uiPlantIdentification -> monolithApp "Sends plant data for backend identification"
-        uiMobileGardeningRecommendation -> monolithApp "Requests AI-based recommendations"
-        uiMobileProfile -> monolithApp "Syncs profile updates with backend"
-        uiMobileLogin -> monolithApp "Authenticates user via backend"
-        uiMobileSettings -> monolithApp "Stores pot or app settings centrally"
-        uiMobilePotRegister -> monolithApp "Registers new smart pot"
+        // Mobile local storage
+        mobPotDetails -> mobileDB "Caches pot data" "SQLite"
+        mobGardeningRecommendation -> mobileDB "Stores suggestions" "SQLite"
+        mobSettings -> mobileDB "Persists preferences" "SQLite"
+        mobProfile -> mobileDB "Caches profile" "SQLite"
+        mobNotifications -> mobileDB "Stores alerts" "SQLite" 
+        mobSensorsAlert -> mobileDB "Reads sensor history" "SQLite"
+
+        // === Estructura Base por BC (Aggregate → Repo → Controller) ===
+        // User BC
+        genUserAggregate -> genUserRepo "Stores user data" "SQL/TCP"
+        genUserRepo -> genUserController "Manages user operations" "SQL/TCP"
+
+        // Profile BC
+        genProfileAggregate -> genProfileRepo "Stores profile/weather data" "SQL/TCP"
+        genProfileRepo -> genProfileController "Manages profile operations" "SQL/TCP"
+
+        // Plant BC
+        sptPlantAggregate -> sptPlantRepo "Stores species data" "SQL/TCP"
+        sptPlantRepo -> sptPlantController "Manages plant operations" "SQL/TCP"
+
+        // Monitoring BC (Sensores/Alertas)
+        sptSensorRepo -> sptSensorController "Manages sensors" "SQL/TCP"
+        sptAlertAggregate -> sptAlertRepo "Stores alerts" "SQL/TCP"
+        sptAlertRepo -> sptAlertController "Triggers notifications" "SQL/TCP"
+
+        // Data Insights BC (Reportes)
+        sptReportAggregate -> sptReportRepo "Persists analytics" "SQL/TCP"
+        sptReportRepo -> sptReportController "Generates reports" "SQL/TCP"
+
+        // Pot Management BC
+        sptPotAggregate -> sptPotRepo "Stores pot configurations" "SQL/TCP"
+        sptPotRepo -> sptPotController "Manages pots" "SQL/TCP"
+
+        // Watering BC
+        coreWateringRepo -> coreWateringController "Controls watering" "SQL/TCP"
+
+        // Care Intelligence ↔ Weather/Reports/Sensores/Plant
+        coreCareIntelligenceController -> genProfileController "Requests weather data" "JSON/HTTPS"
+        coreCareIntelligenceController -> sptReportController "Analiza reportes históricos" "JSON/HTTPS"
+        coreCareIntelligenceController -> sptSensorController "Obtiene métricas en tiempo real" "JSON/HTTPS"
+        coreCareIntelligenceController -> sptPlantController "Consulta especies registradas" "JSON/HTTPS"
+
+        // User → Profile (Creación vinculada)
+        genUserController -> genProfileController "Crea perfil al registrar usuario" "JSON/HTTPS"
+
+        // Alertas → Reportes
+        sptAlertController -> sptReportController "Genera reporte técnico de alerta" "JSON/HTTPS"
+
+        // Pot Management → Watering
+        sptPotController -> coreWateringController "Ajusta programación de riego" "JSON/HTTPS"
 
 
+        // === Relaciones con Externos (Mantenidas) ===
+        genStripeIntegration -> stripeExternalService "Processes payments" "API Call/HTTPS"
+        genGeoApiIntegration -> geoAPI "Gets location" "API Call/HTTPS"
 
-        // Backend general
-        monolithApp -> plantDB "Reads and writes persistent plant-related data"
-        profiles -> plantDB "Reads and updates user roles and profile data"
-        profiles -> userManagement "Fetches user identity and account data"
-        aiService -> externalGemini "Requests AI-based plant care insights"
-        aiService -> gardeningRecommendation "Enhances recommendations with AI insights"
+        // External Services ↔ Integrations (Obligatorias)
+        sptPlantApiIntegration -> sptPlantController "Identifies species" "API Call/HTTPS"
+        genFirebaseIntegration -> firebaseExternalService "Verifies 2FA, Sends Email Verification" "API Call/HTTPS"
+        sptPlantApiIntegration -> plantAPI "Identifies species" "API Call/HTTPS"
 
-        // Edge ↔ Backend ↔ Embedded
-        edgeApp -> monolithApp "Sends processed plant data and analytics"
-        edgeApp -> edgeDB "Stores intermediate edge data locally"
-        embeddedApp -> edgeApp "Sends sensor data and receives configuration commands"
+        // Aggregates ↔ Repos (Obligatorias)
+        genUserRoleEntity -> genUserRepo "Stores user roles" "SQL/TCP"
+        genPaymentAggregate -> genSubscriptionRepo "Stores payment data" "SQL/TCP"
+        genSubscriptionAggregate -> genSubscriptionRepo "Stores subscription data" "SQL/TCP"
+        coreWateringCondition -> coreWateringRepo "Stores watering conditions" "SQL/TCP"
+        sptReportAggregate -> sptReportRepo "Stores report data" "SQL/TCP"
+        sptNotificationAggregate -> sptAlertRepo "Stores notification data" "SQL/TCP"
+        sptAlertAggregate -> sptAlertRepo "Stores alert data" "SQL/TCP"
+        sptPotAggregate -> sptPotRepo "Stores pot data" "SQL/TCP"        
+        genProfileAggregate -> genProfileRepo "Stores profile data" "SQL/TCP"
+        sptPlantAggregate -> sptPlantRepo "Stores plant data" "SQL/TCP"
 
-        // Componentes internos
-        edgeApp -> plantRegistration "Requests plant tolerance data for analysis"
-        edgeApp -> reportManagement "Sends data to be transformed into reports"
-        gardeningRecommendation -> edgeApp "Requests raw plant analytics for recommendation logic"
-        plantRegistration -> gardeningRecommendation "Provides plant-specific thresholds and traits"
-        reportManagement -> gardeningRecommendation "Supplies recent plant condition reports"
-        gardeningRecommendation -> plantDB "Persists generated recommendations"
-        userManagement -> plantDB "Stores and validates user credentials and accounts"
-        reportManagement -> plantDB "Persists generated and historical reports"
-        plantRegistration -> plantDB "Stores species and tolerance data"
+        // Repos ↔ Controllers
+        coreRecommendationRepo -> coreCareIntelligenceController "Stores recommendations" "SQL/TCP"
+        genSubscriptionRepo -> genSubscriptionController "Manages subscription data" "SQL/TCP"
+        sptReportRepo -> sptReportController "Manages report data" "SQL/TCP"
+        sptSensorRepo -> sptSensorController "Manages sensor data" "SQL/TCP"
+        sptPotRepo -> sptPotController "Manages pot data" "SQL/TCP"
+        sptAlertRepo -> sptAlertController "Manages alert data" "SQL/TCP"
+        genUserRepo -> genUserController "Manages user data" "SQL/TCP"
+        sptPlantRepo -> sptPlantController "Manages plant data" "SQL/TCP"
+        coreWateringRepo -> coreWateringController "Manages watering data" "SQL/TCP"
+        genProfileRepo -> genProfileController "Manages profile data" "SQL/TCP"
+        genUserRepo -> genUserManagementController "Manages user data" "SQL/TCP"
+        genUserRepo -> genTwoFAService "Manages 2FA data" "SQL/TCP"
+        genUserRepo -> genUserAggregate "Manages user data" "SQL/TCP"
+        genProfileRepo -> genProfileAggregate "Manages profile data" "SQL/TCP"
+        
+        // Integrations ↔ Controllers
+        genStripeIntegration -> genSubscriptionController "Processes payments" "API Call/HTTPS"
+        genGeoApiIntegration -> genProfileController "Gets location" "API Call/HTTPS"
+        genFirebaseIntegration -> genUserController "Verifies 2FA code" "API Call/HTTPS"
 
-        // Componentes de la app embebida
-        embeddedApp -> plantContext "Requests processing of real-time plant parameters"
-        plantContext -> monolithApp "Communicates with backend for data sync or config"
-        monolithApp -> plantContext "Sends control commands or parameters for edge app"
+        // Mobile → Monolith
+        mobPlantIdentification -> sptPlantController "Submits plant data" "JSON/HTTPS"
+        mobProfile -> genProfileController "Syncs profile" "JSON/HTTPS"
+        mobLogin -> genUserController "Authenticates" "JSON/HTTPS"
+        mobSettings -> coreWateringController "Saves settings" "JSON/HTTPS"
 
-        plantIdentification -> monolithApp "Registers identified plant to user account"
-        monolithApp -> plantIdentification "Pushes plant identification request to edge"
+        // Comunicación entre componentes del propio bounded context (válidas)
+        sptSensorDataVO -> sptReportAggregate "Stores sensor data" "SQL/TCP"
+        genSubscriptionController -> genProfileRepo "Changes User Subscription" "SQL/TCP"
+        sptPlantController -> sptPlantRepo "Stores plant data" "SQL/TCP"
+        coreWateringController -> coreWateringRepo "Stores watering data" "SQL/TCP"
 
-        plantContext -> edgeDB "Stores parameter results and reports locally"
-        plantIdentification -> careIntelligence "Supplies identified plant info for analysis"
-        plantContext -> careIntelligence "Supplies parameter data for care analysis"
-        careIntelligence -> noticeSystem "Triggers notifications with actionable care advice"
+        // Edge computing
+        edgeMonitoring -> sptSensorController "Monitors sensor data" "HTTPS"
+        edgeWatering -> coreWateringController "Controls irrigation" "HTTPS"
+        edgeNoticeSystem -> sptNotificationAggregate "Sends notifications" "HTTPS"
+        edgeNoticeSystem -> mobileApp "Sends notifications" "HTTPS"
+        edgeApp -> sptSensorController "Streams sensor data" "HTTPS"
+        edgeApp -> edgeDB "Caches analytics" "SQLite"
+        embDeviceController -> smartPot "Controls hardware" "Direct Connection"
+        embDeviceController -> embParameterManager "Sends sensor data" "Direct Connection"
+        sptPlantAggregate -> plantAPI "Identifies plant species" "API Call/HTTPS"
 
-        parameterManager -> edgeApp "Receives configuration parameters"
-        deviceController -> parameterManager "Applies settings and manages hardware interfaces"
-        smartPot -> deviceController "Sends raw sensor data to be interpreted"
+        // Embedded system flow
+        smartPot -> embDeviceController "Sends sensor readings" "Sensor Interface"
+        embParameterManager -> edgeMonitoring "Sends plant parameters" "Sensor Interface"
+        embParameterManager -> edgeNoticeSystem "Sends alerts" "Sensor Interface"
+        embDeviceController -> edgeWatering "Sends irrigation commands" "Sensor Interface"
 
-    }
+
+        deploymentEnvironment "Development"{
+            deploymentNode "Developer Laptop" "Local Development Environment" "Microsoft Windows 10 or Apple macOS" {
+                deploymentNode "Web Browser" "User's Browser" "Chrome, Firefox, Safari, or Edge" {
+                    devWebClientInstance = containerInstance webClientApp
+                    devLandingPageInstance = containerInstance landingPageWebsite 
+                }
+                deploymentNode "Docker Engine" "Local Docker Environment" "Docker Desktop" {
+                    deploymentNode "Backend Services Container Group" "Simulated Backend" "Docker Compose" {
+                        devMonolithInstance = containerInstance monolithApp
+                        devPlantDBInstance = containerInstance plantDB
+                        devEdgeAppInstance = containerInstance edgeApp 
+                        devEdgeDBInstance = containerInstance edgeDB
+                    }
+                }
+                deploymentNode "Mobile Emulator" "Simulated Mobile Device" "Android Studio Emulator or iOS Simulator" {
+                    devMobileAppInstance = containerInstance mobileApp
+                    devMobileDBInstance = containerInstance mobileDB 
+                }
+                deploymentNode "Embedded Simulator" "Simulated SmartPot firmware" "QEMU or custom simulator" {
+                    devEmbeddedAppInstance = containerInstance embeddedApp
+                }
+            }
     
+        }
+        deploymentEnvironment "Production Environment" {
+    
+            deploymentNode "User Devices" "End-user devices" {
+                deploymentNode "Web Browser" "Chrome/Firefox/Safari" "Browser" {
+                    containerInstance webClientApp
+                }
+        
+                deploymentNode "Mobile Device" "iOS/Android" "Mobile" {
+                    containerInstance mobileApp
+                    containerInstance mobileDB
+                }
+            }
+    
+            deploymentNode "SmartPot Hardware" "Physical IoT Device" "ARM Cortex-M4" {
+                deploymentNode "Embedded Firmware" "FreeRTOS" {
+                    containerInstance embeddedApp
+                }
+            }
+    
+            deploymentNode "Azure Cloud" {
+                deploymentNode "Azure App Service" "Landing Page Hosting" {
+                    containerInstance landingPageWebsite
+                }
+        
+                deploymentNode "AKS Cluster" "Kubernetes Cluster" {
+                    deploymentNode "API Pod" ".NET Core" {
+                        containerInstance monolithApp {
+                            description "Domain-driven monolith with 12 bounded contexts"
+                            tags "Monolith"
+                        }
+                    }
+            
+                    deploymentNode "Edge Service Pod" "Python" {
+                        containerInstance edgeApp
+                        containerInstance edgeDB
+                    }
+                }
+        
+                deploymentNode "Azure Database" "Managed MySQL" {
+                    containerInstance plantDB
+                }
+        
+                deploymentNode "Azure Cosmos DB" "NoSQL for Edge Cache" {
+                    containerInstance edgeDB
+                }
+        
+                deploymentNode "Infrastructure Services" {
+                    deploymentNode "Azure Load Balancer" "Traffic distribution" {
+                        tags "Infrastructure"
+                    }
+            
+                    deploymentNode "Azure DNS" "Domain management" {
+                        tags "Infrastructure"
+                    }
+            
+                    deploymentNode "MQTT Broker" "IoT Communication" "Azure IoT Hub" {
+                        tags "Infrastructure"
+                    }
+                    deploymentNode "External Services" {
+                        softwareSystemInstance firebaseExternalService
+                        softwareSystemInstance geoAPI
+                        softwareSystemInstance plantAPI
+                        softwareSystemInstance stripeExternalService
+                    }
+
+                    # Relaciones clave
+                    edgeApp -> edgeDB "Local caching" "SQLite"
+                    mobileApp -> monolithApp "API Calls" "HTTPS/JSON"
+                    webClientApp -> monolithApp "API Calls" "HTTPS/JSON"
+                    monolithApp -> firebaseExternalService "Auth integration" "HTTPS"
+                    monolithApp -> stripeExternalService "Payments" "HTTPS"
+                }
+            }
+        }
+    }
 
     views {
-        systemLandscape macetechPlatform "MacetechLandscape" {
+        systemLandscape "MacetechLandscape" {
             include *
             autolayout lr
+            description "The System Landscape diagram for the Macetech Smart Gardening Platform."
+            properties {
+                structurizr.groups false
+            }
         }
 
         systemContext macetechPlatform "SystemContext" {
             include *
+            // Adding animation similar to BigBank example
+            animation {
+                macetechPlatform
+                hobbyistUser expertUser
+                smartPot firebaseExternalService geoAPI plantAPI stripeExternalService
+            }
             autolayout lr
+            description "The System Context diagram for the Macetech Smart Gardening Platform."
+            properties {
+                structurizr.groups false
+            }
         }
 
-        container macetechPlatform "ContainerView" {
+        container macetechPlatform "Containers" { 
+            include *
+            // Adding animation similar to BigBank example
+            animation {
+                hobbyistUser expertUser smartPot firebaseExternalService geoAPI plantAPI stripeExternalService
+                landingPageWebsite webClientApp mobileApp monolithApp
+                edgeApp embeddedApp
+                plantDB edgeDB mobileDB
+            }
+            autolayout lr
+            description "The Container diagram for the Macetech Smart Gardening Platform."
+        }
+
+        component monolithApp "MonolithComponents" {
+            include *
+            // Animation for key interactions, can be expanded
+            animation {
+                webClientApp mobileApp edgeApp plantDB firebaseExternalService geoAPI plantAPI stripeExternalService 
+                // Key controllers
+                coreWateringController sptPlantController genUserController genProfileController
+                // Key services and repositories
+                coreWateringRepo sptPlantRepo genUserRepo 
+            }
+            autolayout lr
+            description "The Component diagram for the Monolithic API Application."
+        }
+
+        deployment macetechPlatform "Production Environment" {
+            include *
+            autolayout tb
+            description "Despliegue en ambiente productivo Azure"
+            
+            animation {
+                webClientApp
+                mobileApp
+                embeddedApp
+                monolithApp
+                edgeApp
+                plantDB
+                firebaseExternalService
+                stripeExternalService
+            }
+        }
+
+        component webClientApp "WCAComponents" { 
             include *
             autolayout lr
+            description "The Component diagram for the Macetech Web Client Application."
         }
 
-        component edgeApp "EdgeApplicationDiagram" {
+        component mobileApp "MobileAppComponents" { 
             include *
             autolayout lr
+            description "The Component diagram for the Mobile Application."
         }
-
-        component embeddedApp "EmbeddedApplicationDiagram" {
+        
+        component edgeApp "EdgeComponents" { 
             include *
             autolayout lr
+            description "The Component diagram for the Edge Application."
         }
 
-        component monolithApp "MonolithComponentsDiagram" {
+        component embeddedApp "EmbeddedComponents" { 
             include *
             autolayout lr
+            description "The Component diagram for the Embedded Application."
         }
 
-        component WebClientApp "WCAComponentsDiagram" {
+        component landingPageWebsite "LandingPageComponents" {
             include *
             autolayout lr
+            description "The Component diagram for the Landing Page Website."
         }
-
-        component mobileApp "MobileAppComponentsDiagram" {
-            include *
-            autolayout lr
-        }
-
-        component LandingPageWebsite "LandingPageComponentsDiagram" {
-            include *
-            autolayout lr
-        }
-
+        
         styles {
             element "Person" {
                 shape Person
+                background #08427b
+                color #ffffff
+                fontSize 22
             }
-
             element "Software System" {
                 background #1168bd
                 color #ffffff
             }
-
+            element "External System" {
+                background #999999
+                color #ffffff
+            }
             element "Container" {
                 background #438dd5
                 color #ffffff
             }
-
+            element "Web Browser" { 
+                shape WebBrowser
+            }
+            element "Mobile App" { 
+                shape MobileDeviceLandscape
+            }
+            element "Database" {
+                shape Cylinder
+                background #6db33f
+                color #ffffff
+            }
             element "Component" {
                 background #85bbf0
                 color #000000
             }
-
-            element "Database" {
-                shape Cylinder
-                background #438dd5
-                color #ffffff
-            }
-
             element "Hardware" {
                 shape RoundedBox
                 background #666666
                 color #ffffff
             }
-
-            element "Core BC" {
-                background #2e7d32
+            element "Controller" {
+                background #D3D3D3
+                color #000000
+                shape RoundedBox
+            }
+            element "Service" {
+                background #E6E6FA
+                color #000000
+                shape RoundedBox
+            }
+            element "Repository" {
+                background #FFFACD
+                color #000000
+                shape RoundedBox
+            }
+            element "Integration" {
+                background #ADD8E6
+                color #000000
+                shape RoundedBox
+            }
+            element "Facade" {
+                background #F0E68C
+                color #000000
+                shape RoundedBox
+            }
+            element "Domain Model" {
+                background #FFFFFF
+                color #000000
+                shape Component
+            }
+            element "Core BC" { 
+                background #2e7d32 
                 color #ffffff
                 shape RoundedBox
             }
-
-            element "Support BC" {
+            element "Support BC" { 
                 background #fbc02d
                 color #000000
                 shape RoundedBox
             }
-
-            element "Commodity BC" {
+            element "Generic BC" { 
                 background #9e9e9e
                 color #000000
                 shape RoundedBox
             }
 
-            element "External" {
-                background #999999
-                color #ffffff
-            }
         }
     }
 }
