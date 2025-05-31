@@ -61,17 +61,17 @@ model {
         mobileApp = container "Mobile Application" "Flutter-based mobile app consuming backend APIs." "Dart / Flutter" "Mobile App" {
             
             group "Mobile Components" {
-                mobIAM = component "Identification and Authentication" "Handles user authentication and registration." "Angular" "Web Component"
-                mobHome = component "Home Page" "Displays a list of smart pots linked to the user's profile, a toolbar to navigate in the app and notifications." "Angular" "Web Component"
-                mobPotAddition = component "Pot Addition UI" "Handles the addition of new smart pots." "Angular" "Web Component"
-                mobPlantIdentification = component "Plant Identification UI" "Identifies plant species." "Angular" "Web Component"
-                mobNotifications = component "Notifications UI" "Displays notifications and alerts." "Angular" "Web Component"
-                mobPotAndPlantDashboard = component "Pot & Plant Monitoring UI" "Monitors pot and plant health, including alerts and sensor data like ph, temperature, water level." "Angular" "Web Component"
-                mobPotConfiguration = component "Pot Configuration Component" "Manages pot details, watering system, addition and removal." "Angular" "Web Component"
-                mobCheckout = component "Payment Transaction" "Handles subscription payments and plan selection." "Angular" "Web Component"
-                mobMembership = component "Membership UI" "Displays membership information and plan details." "Angular" "Web Component"
-                mobSettings = component "Settings Component" "Manages user preferences and configurations for smart pots like irrigation, report generation, etc." "Angular" "Web Component"
-                mobProfile = component "Profile Management Component" "Manages user profile." "Angular" "Web Component"
+                mobIAM = component "Identification and Authentication" "Handles user authentication and registration." "Dart" "Web Component"
+                mobHome = component "Home Page" "Displays a list of smart pots linked to the user's profile, a toolbar to navigate in the app and notifications." "Dart" "Web Component"
+                mobPotAddition = component "Pot Addition UI" "Handles the addition of new smart pots." "Dart" "Web Component"
+                mobPlantIdentification = component "Plant Identification UI" "Identifies plant species." "Dart" "Web Component"
+                mobNotifications = component "Notifications UI" "Displays notifications and alerts." "Dart" "Web Component"
+                mobPotAndPlantDashboard = component "Pot & Plant Monitoring UI" "Monitors pot and plant health, including alerts and sensor data like ph, temperature, water level." "Dart" "Web Component"
+                mobPotConfiguration = component "Pot Configuration Component" "Manages pot details, watering system, addition and removal." "Dart" "Web Component"
+                mobCheckout = component "Payment Transaction" "Handles subscription payments and plan selection." "Dart" "Web Component"
+                mobMembership = component "Membership UI" "Displays membership information and plan details." "Dart" "Web Component"
+                mobSettings = component "Settings Component" "Manages user preferences and configurations for smart pots like irrigation, report generation, etc." "Dart" "Web Component"
+                mobProfile = component "Profile Management Component" "Manages user profile." "Dart" "Web Component"
             }
             group "Mobile Service Management" {
                 mobBlocState = component "Bloc State Management" "Manages state across the mobile application." "Dart" "Mobile Component"
